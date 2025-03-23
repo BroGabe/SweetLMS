@@ -1,0 +1,3 @@
+name: SweetLMS
+version: '${version}'
+main: com.thedev.sweetlms.SweetLMS

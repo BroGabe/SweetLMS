@@ -1,0 +1,32 @@
+messages:
+  lms-join: '&5&lLMS &fYou have joined the event.'
+  game-starting:
+    - ''
+    - '&5&lLMS &fAn &eLMS&f event is starting in &d&n%seconds%&f seconds! &7(/lms join)'
+    - ''
+  game-started:
+    - ''
+    - '&5&lLMS &fThe &eLMS&f event has started and joining is now closed!'
+    - ''
+  not-enough-players:
+    - ''
+    - '&5&lLMS &fThere was not enough players to start the game!'
+    - ''
+
+lms-settings:
+  disable-hunger: true # Whether hunger is disabled inside the LMS Event.
+  grace-timer: 5 # Time before PvP enables inside the LMS Event. Set 0 to disable.
+  heal-per-kill: 3 # How much HP to heal when killing an opponent. Set 0 to disable.
+  pots-per-kill: 3 # How much pots to award player when killing an opponent. Set 0 to disable.
+
+spawn-location:
+  world: 'world'
+  x: 0
+  y: 70
+  z: 0
+
+lms-location:
+  world: 'LMSWorld'
+  x: 0
+  y: 70
+  z: 0
