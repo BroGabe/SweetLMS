@@ -2,6 +2,7 @@ package com.thedev.sweetlms.modules;
 
 import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.modules.types.GameManager;
+import org.bukkit.entity.Player;
 
 public class LMSManager {
 
@@ -43,10 +44,18 @@ public class LMSManager {
     public LMSManager(SweetLMS plugin) {
         this.plugin = plugin;
 
-        gameManager = new GameManager();
+        gameManager = new GameManager(plugin);
     }
 
     public void startGame() {
         gameManager.startGame();
+    }
+
+    public boolean isInLMS(Player player) {
+        return gameManager.getPlayersSet().contains(player.getUniqueId());
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
     }
 }

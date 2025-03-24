@@ -1,6 +1,7 @@
 package com.thedev.sweetlms.modules.types;
 
 import com.thedev.sweetlms.SweetLMS;
+import com.thedev.sweetlms.configuration.ConfigManager;
 import com.thedev.sweetlms.modules.enums.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,18 +30,44 @@ public class GameManager {
      *
      */
 
-    private final LocationManager locationManager;
+    private final SafetyCheckManager safetyCheckManager;
 
-    private GameState gameState = GameState.NOT_ACTIVE;
+    private final ConfigManager configManager;
+
+    private final KitManager kitManager;
+
+    private final CountdownManager countdownManager;
+
+    private final LocationManager locationManager;
 
     private final Set<UUID> playersSet = new HashSet<>();
 
+    private GameState gameState = GameState.NOT_ACTIVE;
+
     public GameManager(SweetLMS plugin) {
+        configManager = plugin.getConfigManager();
+
+        kitManager = new KitManager(plugin);
         locationManager = new LocationManager(plugin);
+        countdownManager = new CountdownManager(plugin, this);
+
+        safetyCheckManager = new SafetyCheckManager(locationManager, kitManager);
     }
 
     public void startGame() {
+        if(isGameRunning()) return;
+        if(!safetyCheckManager.validGameSetup()) return;
 
+        countdownManager.startCountdown(configManager.getCountdownSeconds());
+    }
+
+    public boolean isGameRunning() {
+        if(gameState != GameState.NOT_ACTIVE) return true;
+        return countdownManager.isCountdownActive();
+    }
+
+    public Set<UUID> getPlayersSet() {
+        return playersSet;
     }
 
     public void setGameState(GameState gameState) {
@@ -56,12 +83,22 @@ public class GameManager {
     }
 
     protected void playerJoinGame(UUID playerUUID) {
-        // Code here is to manage teleporting player to the game.
-        // Will use KitManager to set a player's inventory.
+        if(!isGameRunning()) return;
+
+        if(Bukkit.getPlayer(playerUUID) == null) return;
+
+        Player player = Bukkit.getPlayer(playerUUID);
+
+        player.closeInventory();
+        player.getInventory().clear();
+
+        player.teleport(locationManager.getLMSLocation());
+        kitManager.assignKitToPlayer(playerUUID);
+
         playersSet.add(playerUUID);
     }
 
-    protected void playerDeath(UUID playerUUID) {
+    public void playerDeath(UUID playerUUID) {
         playersSet.remove(playerUUID);
     }
 
@@ -70,6 +107,7 @@ public class GameManager {
     }
 
     protected void forceEnd() {
+        setGameState(GameState.NOT_ACTIVE);
         Iterator<UUID> playersIterator = playersSet.iterator();
 
         while(playersIterator.hasNext()) {

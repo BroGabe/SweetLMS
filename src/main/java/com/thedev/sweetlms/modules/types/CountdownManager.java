@@ -23,10 +23,11 @@ public class CountdownManager {
 
     private Instant countdown = null;
 
-    public CountdownManager(SweetLMS plugin, GameManager gameManager, GraceManager graceManager) {
+    public CountdownManager(SweetLMS plugin, GameManager gameManager) {
         this.plugin = plugin;
         this.gameManager = gameManager;
-        this.graceManager = graceManager;
+
+        graceManager = new GraceManager(plugin, gameManager);
 
         configManager = plugin.getConfigManager();
     }
@@ -38,28 +39,24 @@ public class CountdownManager {
 
         gameManager.setGameState(GameState.COUNTDOWN);
 
-        countdownTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,
-                () -> {
-            // If game started, change gamestate to grace, start grace, and end countdown.
+        countdownTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             if(isCountdownOver()) {
                 countdownTask.cancel();
 
                 if(gameManager.getCurrentPlayers() < 2) {
                     gameManager.forceEnd();
-
                     configManager.broadcastNotEnoughPlayers();
                     return;
                 }
 
                 gameManager.setGameState(GameState.GRACE);
 
-                graceManager.startGrace();
+                graceManager.startGrace(configManager.getGraceSeconds());
 
                 configManager.broadcastGameStarted();
                 return;
             }
 
-            // If countdown is still active, broadcast countdown.
             configManager.broadcastGameStarting(getCountdownSeconds());
 
                 }, 1L, 20L * 5);

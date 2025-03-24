@@ -1,5 +1,8 @@
 messages:
   lms-join: '&5&lLMS &fYou have joined the event.'
+  cannot-do-command: '&5&lLMS &fYou cannot run this &e&ncommand&f during the event!'
+  grace-title: '&e&lGRACE PERIOD'
+  grace-subtitle: '&cPvP &fwill enable in &d%seconds%&f seconds!'
   game-starting:
     - ''
     - '&5&lLMS &fAn &eLMS&f event is starting in &d&n%seconds%&f seconds! &7(/lms join)'
@@ -12,12 +15,30 @@ messages:
     - ''
     - '&5&lLMS &fThere was not enough players to start the game!'
     - ''
+  grace-expired:
+    - ''
+    - '&5&lLMS &fThe &eGrace&f period is over! PvP is now enabled!'
+    - ''
 
 lms-settings:
-  disable-hunger: true # Whether hunger is disabled inside the LMS Event.
+  admin-permission: 'lms.admin' # Allows you to run commands during event.
   grace-timer: 5 # Time before PvP enables inside the LMS Event. Set 0 to disable.
+  deny-teleportation: true # Denies teleporting when participating in LMS event.
+  countdown-time: 60 # The time before the event starts. Minimum 10 seconds.
   heal-per-kill: 3 # How much HP to heal when killing an opponent. Set 0 to disable.
   pots-per-kill: 3 # How much pots to award player when killing an opponent. Set 0 to disable.
+  potion-effects: # Use potion-effects: [] to have no effects. Saturation is recommended to avoid hunger.
+    - 'SPEED:2'
+    - 'INCREASE_DAMAGE:2'
+    - 'SATURATION:2'
+  whitelisted-commands:
+    - 'f c f'
+    - 'msg'
+    - 'r'
+
+kit-data: # Use /lms setkit to make the kit your entire inventory.
+  armor: ''
+  contents: ''
 
 spawn-location:
   world: 'world'
