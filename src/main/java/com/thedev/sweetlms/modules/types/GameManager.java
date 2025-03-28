@@ -40,6 +40,8 @@ public class GameManager {
 
     private final LocationManager locationManager;
 
+    private final RewardManager rewardManager;
+
     private final Set<UUID> playersSet = new HashSet<>();
 
     private GameState gameState = GameState.NOT_ACTIVE;
@@ -52,6 +54,8 @@ public class GameManager {
         countdownManager = new CountdownManager(plugin, this);
 
         safetyCheckManager = new SafetyCheckManager(locationManager, kitManager);
+
+        rewardManager= new RewardManager();
     }
 
     public void startGame() {
@@ -142,5 +146,20 @@ public class GameManager {
         }
 
         // Do other endGame(); code here.
+    }
+
+    public void playerWinEvent() {
+        // Reward player for winning and teleport him to spawn with no inventory.
+    }
+
+    // When a player leaves, gets banned, or mysteriously dies,
+    // check if he's the last player, or check if there's a last player left
+    // to award the last player and shit
+    public boolean isLastPlayer(UUID playerUUID) {
+        return getPlayersSet().contains(playerUUID) && getPlayersSet().size() == 1;
+    }
+
+    public RewardManager getRewardManager() {
+        return rewardManager;
     }
 }

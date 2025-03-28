@@ -3,6 +3,7 @@ messages:
   cannot-do-command: '&5&lLMS &fYou cannot run this &e&ncommand&f during the event!'
   grace-title: '&e&lGRACE PERIOD'
   grace-subtitle: '&cPvP &fwill enable in &d%seconds%&f seconds!'
+  win-msg: '&5&lLMS &fYou have &eWON&f the LMS event!'
   game-starting:
     - ''
     - '&5&lLMS &fAn &eLMS&f event is starting in &d&n%seconds%&f seconds! &7(/lms join)'
@@ -35,6 +36,8 @@ lms-settings:
     - 'f c f'
     - 'msg'
     - 'r'
+  rewards:
+    - 'eco give %player% 1000'
 
 kit-data: # Use /lms setkit to make the kit your entire inventory.
   armor: ''

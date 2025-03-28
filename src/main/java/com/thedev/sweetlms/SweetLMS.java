@@ -17,7 +17,6 @@ public final class SweetLMS extends JavaPlugin {
 
         configManager = new ConfigManager(this);
         lmsManager = new LMSManager(this);
-
     }
 
     @Override

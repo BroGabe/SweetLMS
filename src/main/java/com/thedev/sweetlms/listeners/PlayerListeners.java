@@ -2,8 +2,12 @@ package com.thedev.sweetlms.listeners;
 
 import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.configuration.ConfigManager;
+import com.thedev.sweetlms.events.LMSDeathEvent;
 import com.thedev.sweetlms.modules.LMSManager;
+import com.thedev.sweetlms.modules.enums.GameState;
+import com.thedev.sweetlms.modules.types.GameManager;
 import com.thedev.sweetlms.utils.ColorUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,7 +51,10 @@ public class PlayerListeners implements Listener {
 
         if(!lmsManager.isInLMS(defender)) return;
 
-        if(lmsManager.isInLMS(attacker)) return;
+        if(lmsManager.isInLMS(attacker)) {
+            if(lmsManager.getGameManager().getGameState() == GameState.ACTIVE) return;
+            event.setCancelled(true);
+        }
 
         event.setCancelled(true);
     }
@@ -81,8 +88,11 @@ public class PlayerListeners implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         if(!lmsManager.isInLMS(event.getEntity())) return;
 
-        lmsManager.getGameManager().playerDeath(event.getEntity().getUniqueId());
+        GameManager gameManager = lmsManager.getGameManager();
 
+        gameManager.playerDeath(event.getEntity().getUniqueId());
+
+        // If killer is unknown or not in LMS, check for a new last player.
         if(event.getEntity().getKiller() == null) return;
 
         Player killer = event.getEntity().getKiller();
@@ -90,6 +100,12 @@ public class PlayerListeners implements Listener {
         if(!lmsManager.isInLMS(killer)) return;
 
         // Award player pots and health for killing another LMS player.
+        LMSDeathEvent lmsDeathEvent = new LMSDeathEvent(killer, event.getEntity(), configManager.getHealPerKill(), configManager.getPotsAmount());
+        Bukkit.getPluginManager().callEvent(lmsDeathEvent);
+
+        lmsManager.playerKillReward(killer, lmsDeathEvent.getHealAmount(), lmsDeathEvent.getPotsAmount());
+
+        if(!gameManager.isLastPlayer(killer.getUniqueId())) return;
     }
 
     @EventHandler

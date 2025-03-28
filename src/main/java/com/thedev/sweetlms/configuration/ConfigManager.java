@@ -27,6 +27,7 @@ public class ConfigManager {
 
     private final int graceSeconds;
     private final int countdownSeconds;
+    private final int potsAmount;
 
     public ConfigManager(SweetLMS plugin) {
         FileConfiguration config = plugin.getConfig();
@@ -46,6 +47,7 @@ public class ConfigManager {
         healPerKill = config.getDouble("lms-settings.heal-per-kill");
         graceSeconds = config.getInt("lms-settings.grace-timer");
         countdownSeconds = config.getInt("lms-settings.countdown-time");
+        potsAmount = config.getInt("lms-settings.pots-per-kill");
 
         denyTeleportation = config.getBoolean("lms-settings.deny-teleportation");
     }
@@ -103,6 +105,10 @@ public class ConfigManager {
 
     public int getGraceSeconds() {
         return graceSeconds;
+    }
+
+    public int getPotsAmount() {
+        return potsAmount;
     }
 
     public boolean getDenyTeleportation() {

@@ -58,4 +58,8 @@ public class LMSManager {
     public GameManager getGameManager() {
         return gameManager;
     }
+
+    public void playerKillReward(Player player, double health, int pots) {
+        getGameManager().getRewardManager().rewardPlayerKill(player, health, pots);
+    }
 }
