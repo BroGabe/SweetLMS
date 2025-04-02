@@ -4,10 +4,13 @@ import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.configuration.ConfigManager;
 import com.thedev.sweetlms.utils.ItemSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,6 +20,22 @@ public class KitManager {
 
     public KitManager(SweetLMS plugin) {
         configManager = plugin.getConfigManager();
+    }
+
+    public boolean isValidKit() {
+        return (getArmorContents() != null && getInventory() != null);
+    }
+
+    public void saveInventoryToFile(Player player) {
+        if(!isInventoryEmpty(player)) {
+            String inventoryBase64 = ItemSerializer.toBase64(player.getInventory());
+            configManager.updateInventoryString(inventoryBase64);
+        }
+
+        if(!isArmorEmpty(player)) {
+            String armorBase64 = ItemSerializer.itemStackArrayToBase64(player.getInventory().getArmorContents());
+            configManager.updateArmorString(armorBase64);
+        }
     }
 
     protected void assignKitToPlayer(UUID playerUUID) {
@@ -29,11 +48,9 @@ public class KitManager {
         player.getInventory().setArmorContents(getArmorContents());
     }
 
-    public boolean isValidKit() {
-        return (getArmorContents() != null && getInventory() != null);
-    }
-
     private Inventory getInventory() {
+        if(configManager.getBase64Inventory().isEmpty()) return null;
+
         Inventory inventory;
 
         try {
@@ -49,7 +66,7 @@ public class KitManager {
         ItemStack[] contents;
 
         if(configManager.getBase64Armor().isEmpty()) {
-            return new ItemStack[0];
+            return null;
         }
 
         try {
@@ -59,5 +76,33 @@ public class KitManager {
         }
 
         return contents;
+    }
+
+    private boolean isInventoryEmpty(Player player) {
+        Iterator<ItemStack> inventoryContents = Arrays.stream(player.getInventory().getContents()).iterator();
+
+        while(inventoryContents.hasNext()) {
+            ItemStack itemStack = inventoryContents.next();
+
+            if(itemStack == null || itemStack.getType() == Material.AIR) continue;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isArmorEmpty(Player player) {
+        Iterator<ItemStack> inventoryContents = Arrays.stream(player.getInventory().getArmorContents()).iterator();
+
+        while(inventoryContents.hasNext()) {
+            ItemStack itemStack = inventoryContents.next();
+
+            if(itemStack == null || itemStack.getType() == Material.AIR) continue;
+
+            return false;
+        }
+
+        return true;
     }
 }

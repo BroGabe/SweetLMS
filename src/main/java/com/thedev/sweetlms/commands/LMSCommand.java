@@ -9,6 +9,7 @@ import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.modules.LMSManager;
 import com.thedev.sweetlms.utils.ColorUtil;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 @CommandAlias("lms|lastmanstanding")
 public class LMSCommand extends BaseCommand {
@@ -35,5 +36,14 @@ public class LMSCommand extends BaseCommand {
         lmsManager.startGame();
 
         sender.sendMessage(ColorUtil.color("&5&lLMS &fYou have started the LMS event!"));
+    }
+
+    @Subcommand("setkit")
+    @CommandPermission("sweetlms.admin")
+    @Description("sets the kit to your inventory")
+    public void onSetKit(Player player) {
+        lmsManager.setKitContents(player);
+
+        player.sendMessage(ColorUtil.color("&5&lLMS &fYou have created the default kit!"));
     }
 }

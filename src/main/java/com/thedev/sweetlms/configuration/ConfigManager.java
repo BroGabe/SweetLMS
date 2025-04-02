@@ -10,6 +10,10 @@ import java.util.List;
 
 public class ConfigManager {
 
+    private final SweetLMS plugin;
+
+    private final FileConfiguration config;
+
     private final List<String> gameStartingMessages;
     private final List<String> gameStartedMessages;
     private final List<String> notEnoughPlayersMessages;
@@ -24,10 +28,10 @@ public class ConfigManager {
     private final List<String> rewardsList;
 
     @Getter
-    private final String base64Inventory;
+    private String base64Inventory;
 
     @Getter
-    private final String base64Armor;
+    private String base64Armor;
 
     @Getter
     private final String graceTitle;
@@ -54,7 +58,9 @@ public class ConfigManager {
     private final int potsAmount;
 
     public ConfigManager(SweetLMS plugin) {
-        FileConfiguration config = plugin.getConfig();
+        this.plugin = plugin;
+
+        config = plugin.getConfig();
 
         gameStartingMessages = config.getStringList("messages.game-starting");
         gameStartedMessages = config.getStringList("messages.game-started");
@@ -90,5 +96,19 @@ public class ConfigManager {
 
     public void broadcastNotEnoughPlayers() {
         notEnoughPlayersMessages.forEach(s -> Bukkit.broadcastMessage(ColorUtil.color(s)));
+    }
+
+    public void updateInventoryString(String string) {
+        config.set("kit-data.contents", string);
+        plugin.saveConfig();
+
+        base64Inventory = string;
+    }
+
+    public void updateArmorString(String string) {
+        config.set("kit-data.armor", string);
+        plugin.saveConfig();
+
+        base64Armor = string;
     }
 }

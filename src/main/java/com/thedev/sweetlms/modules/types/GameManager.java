@@ -19,6 +19,7 @@ public class GameManager {
 
     private final CountdownManager countdownManager;
 
+    @Getter
     private final LocationManager locationManager;
 
     @Getter

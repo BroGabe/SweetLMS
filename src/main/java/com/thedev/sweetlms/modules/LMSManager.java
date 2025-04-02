@@ -2,14 +2,12 @@ package com.thedev.sweetlms.modules;
 
 import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.modules.types.GameManager;
-import lombok.Getter;
 import org.bukkit.entity.Player;
 
 public class LMSManager {
 
     private final SweetLMS plugin;
 
-    @Getter
     private final GameManager gameManager;
 
     public LMSManager(SweetLMS plugin) {
@@ -33,10 +31,14 @@ public class LMSManager {
     }
 
     public void playerKillReward(Player player, double health, int pots) {
-        getGameManager().getRewardManager().rewardPlayerKill(player, health, pots);
+        gameManager.getRewardManager().rewardPlayerKill(player, health, pots);
     }
 
     public void setKitContents(Player player) {
-        gameManager.getKitManager().
+        gameManager.getKitManager().saveInventoryToFile(player);
+    }
+
+    public void setSpawn(Player player) {
+
     }
 }
