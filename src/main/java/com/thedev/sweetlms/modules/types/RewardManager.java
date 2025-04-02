@@ -2,6 +2,7 @@ package com.thedev.sweetlms.modules.types;
 
 import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.configuration.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +18,11 @@ public class RewardManager {
 
     public RewardManager(SweetLMS plugin) {
         configManager = plugin.getConfigManager();
+    }
+
+    public void rewardPlayerWin(Player player) {
+        configManager.getRewardsList().forEach(string -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string
+                .replace("%player%", player.getName())));
     }
 
     public void rewardPlayerKill(Player player, double health, int potsAmount) {

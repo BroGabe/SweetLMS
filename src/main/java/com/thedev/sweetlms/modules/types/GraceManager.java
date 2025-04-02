@@ -111,6 +111,7 @@ public class GraceManager {
     public boolean isCountdownActive() {
         return graceTask != null
                 && countdown != null
-                && Bukkit.getScheduler().isCurrentlyRunning(graceTask.getTaskId());
+                && (Bukkit.getScheduler().isCurrentlyRunning(graceTask.getTaskId())
+        || Bukkit.getScheduler().isQueued(graceTask.getTaskId()));
     }
 }

@@ -3,6 +3,8 @@ package com.thedev.sweetlms.modules.types;
 import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.configuration.ConfigManager;
 import com.thedev.sweetlms.modules.enums.GameState;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,37 +15,26 @@ import java.util.UUID;
 
 public class GameManager {
 
-    /**
-     * startGame(); method which will start
-     * the countdown until the game starts and set gameState to Countdown.
-     *
-     * When GameState is at countdown, doing /lms join teleports you to the arena.
-     *
-     * startGame(); method will start the countdown task. When countdown task is over
-     * it will start the grace task. When grace task is over, pvp will be enabled.
-     * Possibly an endGrace(); method.
-     *
-     * Method to handle teleporting player to a game and giving them LMS kit.
-     *
-     * GameManager needs countdownManager for startGame();
-     * countdownManager needs GraceManager for when countdown is over.
-     *
-     */
-
-    private final SafetyCheckManager safetyCheckManager;
-
     private final ConfigManager configManager;
-
-    private final KitManager kitManager;
 
     private final CountdownManager countdownManager;
 
     private final LocationManager locationManager;
 
+    @Getter
+    private final KitManager kitManager;
+
+    @Getter
+    private final SafetyCheckManager safetyCheckManager;
+
+    @Getter
     private final RewardManager rewardManager;
 
+    @Getter
     private final Set<UUID> playersSet = new HashSet<>();
 
+    @Setter
+    @Getter
     private GameState gameState = GameState.NOT_ACTIVE;
 
     public GameManager(SweetLMS plugin) {
@@ -55,7 +46,7 @@ public class GameManager {
 
         safetyCheckManager = new SafetyCheckManager(locationManager, kitManager);
 
-        rewardManager= new RewardManager();
+        rewardManager= new RewardManager(plugin);
     }
 
     public void startGame() {
@@ -66,23 +57,6 @@ public class GameManager {
     }
 
     public boolean isGameRunning() {
-        if(gameState != GameState.NOT_ACTIVE) return true;
-        return countdownManager.isCountdownActive();
-    }
-
-    public Set<UUID> getPlayersSet() {
-        return playersSet;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public boolean isRunning() {
         return (gameState != GameState.NOT_ACTIVE);
     }
 
@@ -131,35 +105,38 @@ public class GameManager {
         }
     }
 
-    protected void endGame() {
-        // Loop through playerSet and teleport each player back to spawn.
+    public void gameWon(Player player) {
         Iterator<UUID> playersIterator = playersSet.iterator();
         while(playersIterator.hasNext()) {
             UUID playerUUID = playersIterator.next();
 
-            // Check if player is online or still exists.
+            if(Bukkit.getPlayer(playerUUID) == null) {
+                playersIterator.remove();
+                continue;
+            }
 
-            // Teleports player back to spawn
-
-            // Removes player from the list
+            Player participator = Bukkit.getPlayer(playerUUID);
+            participator.teleport(locationManager.getSpawnLocation());
             playersIterator.remove();
         }
 
-        // Do other endGame(); code here.
+        if(player == null) return;
+
+        rewardManager.rewardPlayerWin(player);
     }
 
-    public void playerWinEvent() {
-        // Reward player for winning and teleport him to spawn with no inventory.
+    public boolean hasWinner() {
+        return (getPlayersSet().size() == 1);
     }
 
-    // When a player leaves, gets banned, or mysteriously dies,
-    // check if he's the last player, or check if there's a last player left
-    // to award the last player and shit
-    public boolean isLastPlayer(UUID playerUUID) {
-        return getPlayersSet().contains(playerUUID) && getPlayersSet().size() == 1;
-    }
+    public Player getLastPlayer() {
+        if(getPlayersSet().size() != 1) return null;
 
-    public RewardManager getRewardManager() {
-        return rewardManager;
+        if(Bukkit.getPlayer(getPlayersSet().iterator().next()) == null) {
+            forceEnd();
+            return null;
+        }
+
+        return Bukkit.getPlayer(getPlayersSet().iterator().next());
     }
 }

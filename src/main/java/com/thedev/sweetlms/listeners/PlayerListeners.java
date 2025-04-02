@@ -92,20 +92,22 @@ public class PlayerListeners implements Listener {
 
         gameManager.playerDeath(event.getEntity().getUniqueId());
 
-        // If killer is unknown or not in LMS, check for a new last player.
+        if(gameManager.hasWinner()) {
+            if(gameManager.getLastPlayer() == null) return;
+
+            gameManager.gameWon(gameManager.getLastPlayer());
+        }
+
         if(event.getEntity().getKiller() == null) return;
 
         Player killer = event.getEntity().getKiller();
 
         if(!lmsManager.isInLMS(killer)) return;
 
-        // Award player pots and health for killing another LMS player.
         LMSDeathEvent lmsDeathEvent = new LMSDeathEvent(killer, event.getEntity(), configManager.getHealPerKill(), configManager.getPotsAmount());
         Bukkit.getPluginManager().callEvent(lmsDeathEvent);
 
         lmsManager.playerKillReward(killer, lmsDeathEvent.getHealAmount(), lmsDeathEvent.getPotsAmount());
-
-        if(!gameManager.isLastPlayer(killer.getUniqueId())) return;
     }
 
     @EventHandler
@@ -133,7 +135,7 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         if(!lmsManager.isInLMS(event.getPlayer())) return;
-        if(!configManager.getDenyTeleportation()) return;
+        if(!configManager.isDenyTeleportation()) return;
 
         event.setCancelled(true);
     }

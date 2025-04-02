@@ -102,6 +102,7 @@ public class CountdownManager {
     public boolean isCountdownActive() {
         return countdownTask != null
                 && countdown != null
-                && Bukkit.getScheduler().isCurrentlyRunning(countdownTask.getTaskId());
+                && (Bukkit.getScheduler().isCurrentlyRunning(countdownTask.getTaskId())
+    || Bukkit.getScheduler().isQueued(countdownTask.getTaskId()));
     }
 }

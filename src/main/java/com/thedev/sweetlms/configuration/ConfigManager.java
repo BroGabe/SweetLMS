@@ -2,6 +2,7 @@ package com.thedev.sweetlms.configuration;
 
 import com.thedev.sweetlms.SweetLMS;
 import com.thedev.sweetlms.utils.ColorUtil;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -12,21 +13,44 @@ public class ConfigManager {
     private final List<String> gameStartingMessages;
     private final List<String> gameStartedMessages;
     private final List<String> notEnoughPlayersMessages;
+
+    @Getter
     private final List<String> graceExpiredMessages;
+
+    @Getter
     private final List<String> whitelistedCommands;
 
+    @Getter
+    private final List<String> rewardsList;
+
+    @Getter
     private final String base64Inventory;
+
+    @Getter
     private final String base64Armor;
+
+    @Getter
     private final String graceTitle;
+
+    @Getter
     private final String graceSubtitle;
+
+    @Getter
     private final String cannotDoCommand;
 
+    @Getter
     private final double healPerKill;
 
+    @Getter
     private final boolean denyTeleportation;
 
+    @Getter
     private final int graceSeconds;
+
+    @Getter
     private final int countdownSeconds;
+
+    @Getter
     private final int potsAmount;
 
     public ConfigManager(SweetLMS plugin) {
@@ -37,6 +61,7 @@ public class ConfigManager {
         notEnoughPlayersMessages = config.getStringList("messages.not-enough-players");
         graceExpiredMessages = config.getStringList("messages.grace-expired");
         whitelistedCommands = config.getStringList("lms-settings.whitelisted-commands");
+        rewardsList = config.getStringList("lms-settings.rewards");
 
         base64Inventory = config.getString("kit-data.contents");
         base64Armor = config.getString("kit-data.armor");
@@ -65,53 +90,5 @@ public class ConfigManager {
 
     public void broadcastNotEnoughPlayers() {
         notEnoughPlayersMessages.forEach(s -> Bukkit.broadcastMessage(ColorUtil.color(s)));
-    }
-
-    public List<String> getGraceExpiredMessages() {
-        return graceExpiredMessages;
-    }
-
-    public List<String> getWhitelistedCommands() {
-        return whitelistedCommands;
-    }
-
-    public int getCountdownSeconds() {
-        return countdownSeconds;
-    }
-
-    public String getBase64Inventory() {
-        return base64Inventory;
-    }
-
-    public String getCannotDoCommand() {
-        return cannotDoCommand;
-    }
-
-    public String getBase64Armor() {
-        return base64Armor;
-    }
-
-    public String getGraceTitle() {
-        return graceTitle;
-    }
-
-    public String getGraceSubtitle() {
-        return graceSubtitle;
-    }
-
-    public double getHealPerKill() {
-        return healPerKill;
-    }
-
-    public int getGraceSeconds() {
-        return graceSeconds;
-    }
-
-    public int getPotsAmount() {
-        return potsAmount;
-    }
-
-    public boolean getDenyTeleportation() {
-        return denyTeleportation;
     }
 }

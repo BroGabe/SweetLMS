@@ -2,8 +2,10 @@ package com.thedev.sweetlms;
 
 import com.thedev.sweetlms.configuration.ConfigManager;
 import com.thedev.sweetlms.modules.LMSManager;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@Getter
 public final class SweetLMS extends JavaPlugin {
 
     private LMSManager lmsManager;
@@ -24,11 +26,4 @@ public final class SweetLMS extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public LMSManager getLmsManager() {
-        return lmsManager;
-    }
-
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
 }
